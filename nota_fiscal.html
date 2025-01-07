@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emissão de NFS-e</title>
+    <style>
+        body {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            padding: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input {
+            margin: 5px 0;
+            padding: 8px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .nota-fiscal {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Emissão de NFS-e</h1>
+
+    <form id="nfsForm">
+        <label for="valorVenda">Valor da Venda (R$):</label>
+        <input type="number" id="valorVenda" required><br>
+
+        <label for="itens">Itens:</label>
+        <input type="text" id="itens" required><br>
+
+        <label for="irpf">Porcentagem do IRPF (%):</label>
+        <input type="number" id="irpf" required><br>
+
+        <label for="pis">Porcentagem do PIS (%):</label>
+        <input type="number" id="pis" required><br>
+
+        <label for="cofins">Porcentagem do COFINS (%):</label>
+        <input type="number" id="cofins" required><br>
+
+        <label for="inss">Porcentagem do INSS (%):</label>
+        <input type="number" id="inss" required><br>
+
+        <label for="issqn">Porcentagem do ISSQN (%):</label>
+        <input type="number" id="issqn" required><br><br>
+
+        <button type="button" onclick="gerarNotaFiscal()">Emitir Nota Fiscal</button>
+    </form>
+
+    <div id="notaFiscal" class="nota-fiscal" style="display:none;">
+        <h2>Nota Fiscal de Serviço</h2>
+        <p><strong>Itens:</strong> <span id="notaItens"></span></p>
+        <p><strong>Valor da Venda:</strong> R$ <span id="notaValorVenda"></span></p>
+        <p><strong>IRPF:</strong> R$ <span id="notaIrpf"></span></p>
+        <p><strong>PIS:</strong> R$ <span id="notaPis"></span></p>
+        <p><strong>COFINS:</strong> R$ <span id="notaCofins"></span></p>
+        <p><strong>INSS:</strong> R$ <span id="notaInss"></span></p>
+        <p><strong>ISSQN:</strong> R$ <span id="notaIssqn"></span></p>
+        <p><strong>Total de Impostos:</strong> R$ <span id="notaTotalImpostos"></span></p>
+        <p><strong>Total a Pagar:</strong> R$ <span id="notaTotalPagar"></span></p>
+    </div>
+
+    <script>
+        function calcularImpostos(valorVenda, irpf, pis, cofins, inss, issqn) {
+            const valorIrpf = (valorVenda * irpf) / 100;
+            const valorPis = (valorVenda * pis) / 100;
+            const valorCofins = (valorVenda * cofins) / 100;
+            const valorInss = (valorVenda * inss) / 100;
+            const valorIssqn = (valorVenda * issqn) / 100;
+
+            const totalImpostos = valorIrpf + valorPis + valorCofins + valorInss + valorIssqn;
+            const totalPagar = valorVenda + totalImpostos;
+
+            return {
+                valorIrpf,
+                valorPis,
+                valorCofins,
+                valorInss,
+                valorIssqn,
+                totalImpostos,
+                totalPagar
+            };
+        }
+
+        function gerarNotaFiscal() {
+            const valorVenda = parseFloat(document.getElementById("valorVenda").value);
+            const itens = document.getElementById("itens").value;
+            const irpf = parseFloat(document.getElementById("irpf").value);
+            const pis = parseFloat(document.getElementById("pis").value);
+            const cofins = parseFloat(document.getElementById("cofins").value);
+            const inss = parseFloat(document.getElementById("inss").value);
+            const issqn = parseFloat(document.getElementById("issqn").value);
+
+            // Verificação de entradas vazias ou inválidas
+            if (!valorVenda || !itens || isNaN(irpf) || isNaN(pis) || isNaN(cofins) || isNaN(inss) || isNaN(issqn)) {
+                alert("Por favor, preencha todos os campos corretamente!");
+                return;
+            }
+
+            const impostos = calcularImpostos(valorVenda, irpf, pis, cofins, inss, issqn);
+
+            document.getElementById("notaItens").textContent = itens;
+            document.getElementById("notaValorVenda").textContent = valorVenda.toFixed(2);
+            document.getElementById("notaIrpf").textContent = impostos.valorIrpf.toFixed(2);
+            document.getElementById("notaPis").textContent = impostos.valorPis.toFixed(2);
+            document.getElementById("notaCofins").textContent = impostos.valorCofins.toFixed(2);
+            document.getElementById("notaInss").textContent = impostos.valorInss.toFixed(2);
+            document.getElementById("notaIssqn").textContent = impostos.valorIssqn.toFixed(2);
+            document.getElementById("notaTotalImpostos").textContent = impostos.totalImpostos.toFixed(2);
+            document.getElementById("notaTotalPagar").textContent = impostos.totalPagar.toFixed(2);
+
+            document.getElementById("notaFiscal").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
