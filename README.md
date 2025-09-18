@@ -29,4 +29,4 @@ Este código foi projetado para fins didáticos, para testar conhecimentos em HT
 
 - **HTML**: Estrutura da página.
 - **CSS**: Estilos visuais para a página.
-- **JavaScript**: Cálculos e manipulação dinâmica do DOM.
+- **JavaScript**: Cálculos e manipulação dinâmica do DOM
